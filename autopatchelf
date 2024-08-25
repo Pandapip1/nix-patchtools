@@ -56,6 +56,8 @@ autoPatchBinary()
 
     local rpath=
 
+    local hasFailed=
+
     for lib in $neededLibraries
     do
         local foundLibPath=
@@ -86,11 +88,17 @@ autoPatchBinary()
         if [ "$foundLibPath" = "" ]
         then
             echo "No package found that provides library: $lib" >&2
-            exit 1
+            hasFailed=1
         else
             rpath="$rpath${rpath:+:}$foundLibPath"
         fi
     done
+
+    if [ "$hasFailed" = "1" ]
+    then
+        echo "Cannot find all required libraries for binary: $binary" >&2
+        exit 1
+    fi
 
     # Patch the binary's RPATH to allow it to find the needed libraries
 

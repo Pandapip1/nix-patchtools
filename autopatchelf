@@ -181,7 +181,7 @@ then
 
     find "$pathParam" $findParam -type f | while read binary
     do
-        if file $binary | grep -q "^$binary: ELF"
+        if (file $binary | grep -q "^$binary: ELF") && ((file $binary | grep -q "executable") || (file $binary | grep -q "shared object"))
         then
             autoPatchBinary "$binary" "$searchPathVariable"
         fi
